@@ -7,6 +7,8 @@ import CountUp from '../components/ui/CountUp';
 import PhotoBackdrop from '../components/ui/PhotoBackdrop';
 import { usePublicCatalog, useStore } from '../context/StoreContext';
 import { INDUSTRIES } from '../lib/seed';
+import { HERO_TINT } from '../lib/flags';
+import { cn } from '../lib/utils';
 
 // Numbers count up when the stats card scrolls into view; `text` items stay static.
 const STATS = [
@@ -92,33 +94,61 @@ export default function Home() {
             src="/images/hero-cnc-lathe.jpg"
             alt=""
             fetchpriority="high"
-            className="h-full w-full object-cover object-[center_45%] opacity-[0.32] mix-blend-luminosity"
+            className={cn('h-full w-full object-cover object-[center_45%]', HERO_TINT && 'opacity-[0.32] mix-blend-luminosity')}
           />
-          {/* Darker behind the headline (left) and behind the drawing (right) */}
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,31,77,0.78)_0%,rgba(5,31,77,0.45)_45%,rgba(5,31,77,0.25)_100%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(640px_420px_at_78%_45%,rgba(5,31,77,0.6),transparent_70%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-brand-deeper/70 to-transparent" />
+          {HERO_TINT ? (
+            <>
+              {/* Darker behind the headline (left) and behind the drawing (right) */}
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,31,77,0.78)_0%,rgba(5,31,77,0.45)_45%,rgba(5,31,77,0.25)_100%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(640px_420px_at_78%_45%,rgba(5,31,77,0.6),transparent_70%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-brand-deeper/70 to-transparent" />
+            </>
+          ) : (
+            <>
+              {/* Natural-colour photo: neutral (not blue) shade only where text and drawing sit */}
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,10,14,0.8)_0%,rgba(8,10,14,0.66)_38%,rgba(8,10,14,0.3)_62%,rgba(8,10,14,0.2)_100%)]" />
+              <div className="absolute inset-0 hidden bg-[radial-gradient(640px_440px_at_76%_46%,rgba(8,10,14,0.72),transparent_75%)] lg:block" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,10,14,0.3)_0%,rgba(8,10,14,0.15)_40%,rgba(8,10,14,0.6)_100%)] lg:hidden" />
+            </>
+          )}
         </div>
         <div className="container-x relative grid items-center gap-10 pb-32 pt-14 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-12 lg:pb-40 lg:pt-24">
           <div>
-            <p className="fade-up inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/15 px-3.5 py-1.5 text-xs font-bold text-[#FDBA74] sm:text-[13px]">
+            <p
+              className={cn(
+                'fade-up inline-flex items-center gap-2 rounded-full border border-accent/40 px-3.5 py-1.5 text-xs font-bold text-[#FDBA74] sm:text-[13px]',
+                HERO_TINT ? 'bg-accent/15' : 'bg-black/45 backdrop-blur-sm',
+              )}
+            >
               <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
               ISO 9001 certified · Exporting worldwide
             </p>
-            <h1 className="fade-up mt-6 text-[34px] font-extrabold leading-[1.1] text-white [animation-delay:0.1s] sm:text-5xl lg:text-[56px]">
+            <h1
+              className={cn(
+                'fade-up mt-6 text-[34px] font-extrabold leading-[1.1] text-white [animation-delay:0.1s] sm:text-5xl lg:text-[56px]',
+                !HERO_TINT && '[text-shadow:0_2px_4px_rgba(0,0,0,0.35),0_4px_24px_rgba(0,0,0,0.55)]',
+              )}
+            >
               {settings.heroHeadline}
             </h1>
-            <p className="fade-up mt-5 max-w-xl text-base leading-relaxed text-white/75 [animation-delay:0.2s] sm:text-lg">{settings.heroText}</p>
+            <p
+              className={cn(
+                'fade-up mt-5 max-w-xl text-base leading-relaxed [animation-delay:0.2s] sm:text-lg',
+                HERO_TINT ? 'text-white/75' : 'text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.6),0_2px_14px_rgba(0,0,0,0.6)]',
+              )}
+            >
+              {settings.heroText}
+            </p>
             <div className="fade-up mt-8 flex flex-wrap gap-3 [animation-delay:0.3s]">
               <Link to="/products" className="btn btn-primary btn-lg">
                 View products <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link to="/contact" className="btn btn-outline-light btn-lg">
+              <Link to="/contact" className={cn('btn btn-outline-light btn-lg', !HERO_TINT && 'bg-black/35 backdrop-blur-sm')}>
                 Request a quote
               </Link>
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-[600px]">
+          <div className={cn('relative mx-auto w-full max-w-[600px]', !HERO_TINT && '[filter:drop-shadow(0_0_2px_rgba(0,0,0,0.9))_drop-shadow(0_2px_8px_rgba(0,0,0,0.6))]')}>
             <HeroDrawing />
           </div>
         </div>
