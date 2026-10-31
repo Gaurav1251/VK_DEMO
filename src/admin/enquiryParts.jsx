@@ -1,5 +1,6 @@
 import { Mail, Trash2 } from 'lucide-react';
 import Modal from '../components/ui/Modal';
+import Select from '../components/ui/Select';
 import WhatsAppIcon from '../components/ui/WhatsAppIcon';
 import { ENQUIRY_STATUSES } from '../lib/seed';
 import { cn, formatDate, formatQty, telHref, whatsappLink } from '../lib/utils';
@@ -28,26 +29,16 @@ export function StatusSelect({ value, onChange, id, label = 'Status' }) {
       <label htmlFor={id} className="sr-only">
         {label}
       </label>
-      <select
+      <Select
         id={id}
+        variant="pill"
+        listLabel="Enquiry status"
+        panelMinWidth={170}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onClick={(e) => e.stopPropagation()}
-        className={cn(
-          'cursor-pointer appearance-none rounded-full border-0 bg-[length:14px] bg-[right_8px_center] bg-no-repeat py-1 pl-3 pr-7 text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-          s.pill,
-        )}
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6878' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
-        }}
-      >
-        {ENQUIRY_STATUSES.map((st) => (
-          <option key={st} value={st}>
-            {st}
-          </option>
-        ))}
-      </select>
+        onChange={onChange}
+        options={ENQUIRY_STATUSES.map((st) => ({ value: st, label: st, dot: (STATUS_STYLES[st] || STATUS_STYLES.New).dot }))}
+        triggerClassName={cn('status-pill cursor-pointer pr-2 hover:ring-2 hover:ring-black/10', s.pill)}
+      />
     </>
   );
 }

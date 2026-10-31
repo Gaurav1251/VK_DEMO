@@ -7,15 +7,19 @@ import EnquiryModal from './EnquiryModal';
 import WhatsAppFloat from './WhatsAppFloat';
 import { EnquiryModalContext } from './enquiryModalContext';
 import useScrollReveal from '../../lib/useScrollReveal';
+import useSmoothScroll from '../../lib/useSmoothScroll';
 
 export default function SiteLayout() {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const { pathname, search } = useLocation();
   useScrollReveal();
+  const lenis = useSmoothScroll();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [pathname]);
+    // Jump (not glide) to the top on a new page
+    if (lenis.current) lenis.current.scrollTo(0, { immediate: true, force: true });
+    else window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname, lenis]);
 
   useEffect(() => {
     setEnquiryOpen(false);

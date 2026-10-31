@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Modal from '../components/ui/Modal';
 import Field, { Toggle } from '../components/ui/Field';
+import Select from '../components/ui/Select';
+import { categoryThumb } from '../components/site/CategorySelect';
 import ImagePicker from './ImagePicker';
 import { useStore } from '../context/StoreContext';
 import { useToast } from '../context/ToastContext';
@@ -86,14 +88,20 @@ export default function ProductFormModal({ open, product, onClose }) {
     >
       <form id="product-form" onSubmit={submit} noValidate className="grid gap-4 sm:grid-cols-2">
         <Field label="Product name" name="p-name" required {...bind('name')} error={errors.name} className="sm:col-span-2" data-autofocus />
-        <Field label="Category" name="p-categoryId" as="select" required {...bind('categoryId')} error={errors.categoryId} className="sm:col-span-2">
-          <option value="">Choose a category…</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </Field>
+        <Field
+          label="Category"
+          name="p-categoryId"
+          as={Select}
+          required
+          value={form.categoryId}
+          onChange={(v) => bind('categoryId').onChange({ target: { value: v } })}
+          options={categories.map((c) => ({ value: c.id, label: c.name, thumb: categoryThumb(c, 'h-7 w-7') }))}
+          placeholder="Choose a category…"
+          listLabel="Categories"
+          searchPlaceholder="Find a category…"
+          error={errors.categoryId}
+          className="sm:col-span-2"
+        />
         <Field
           label="Short description"
           name="p-short"

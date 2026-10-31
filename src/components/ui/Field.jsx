@@ -1,10 +1,14 @@
 import { AlertCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-/** Labelled input / textarea / select with an accessible error message. */
+/**
+ * Labelled input / textarea with an accessible error message.
+ * `as` can also be a component such as ui/Select, which styles itself.
+ */
 export default function Field({ label, name, required, error, hint, as = 'input', className = '', children, ...props }) {
   const id = `f-${name}`;
   const Tag = as;
+  const native = typeof as === 'string';
   const describedBy = error ? `${id}-err` : hint ? `${id}-hint` : undefined;
   return (
     <div className={className}>
@@ -16,8 +20,8 @@ export default function Field({ label, name, required, error, hint, as = 'input'
       )}
       <Tag
         id={id}
-        name={name}
-        className={cn('input', as === 'textarea' && 'min-h-[96px] resize-y', error && 'input-error')}
+        name={native ? name : undefined}
+        className={native ? cn('input', as === 'textarea' && 'min-h-[96px] resize-y', error && 'input-error') : undefined}
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={describedBy}
         {...props}

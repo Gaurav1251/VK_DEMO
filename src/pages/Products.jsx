@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PackageSearch, Search, X } from 'lucide-react';
 import PageHeader from '../components/site/PageHeader';
+import CategorySelect from '../components/site/CategorySelect';
 import ProductCard from '../components/site/ProductCard';
 import EmptyState from '../components/ui/EmptyState';
 import { usePublicCatalog } from '../context/StoreContext';
-import { cn } from '../lib/utils';
 import { CtaBanner } from './Home';
 
 export default function Products() {
@@ -31,7 +31,7 @@ export default function Products() {
     });
   }, [products, active, query, categoryById]);
 
-  const pills = [{ id: 'all', name: 'All products', count: products.length }, ...categories.map((c) => ({ ...c, count: counts[c.id] || 0 }))];
+  const options = [{ id: 'all', name: 'All categories', count: products.length }, ...categories.map((c) => ({ ...c, count: counts[c.id] || 0 }))];
   const activeName = active === 'all' ? 'All products' : categoryById[active].name;
 
   return (
@@ -45,60 +45,49 @@ export default function Products() {
       />
 
       <section className="container-x py-10 sm:py-14">
-        <div data-reveal="fade" className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by category">
-            {pills.map((pill) => {
-              const selected = pill.id === active;
-              return (
-                <button
-                  key={pill.id}
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => setParam('category', pill.id)}
-                  className={cn(
-                    'flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition',
-                    selected ? 'border-brand bg-brand text-white shadow-sm' : 'border-line bg-white text-ink hover:border-brand/40 hover:text-brand',
-                  )}
-                >
-                  {pill.name}
-                  <span className={cn('rounded-full px-1.5 py-px text-[11px] font-bold', selected ? 'bg-white/20 text-white' : 'bg-soft text-muted')}>
-                    {pill.count}
-                  </span>
+        {/* Category dropdown + search: stays compact however many categories there are */}
+        <div data-reveal="fade" className="relative z-20 rounded-2xl border border-line bg-white p-3 shadow-card sm:p-4">
+          <div className="grid gap-3 md:grid-cols-[minmax(0,320px)_1fr]">
+            <CategorySelect options={options} value={active} onChange={(id) => setParam('category', id)} />
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+              <label htmlFor="product-search" className="sr-only">
+                Search products
+              </label>
+              <input
+                id="product-search"
+                type="search"
+                value={query}
+                onChange={(e) => setParam('q', e.target.value)}
+                placeholder="Search parts, sizes, materials…"
+                className="input h-12 pl-10 pr-10"
+              />
+              {query && (
+                <button type="button" onClick={() => setParam('q', '')} className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:text-ink" aria-label="Clear search">
+                  <X className="h-4 w-4" />
                 </button>
-              );
-            })}
-          </div>
-          <div className="relative w-full shrink-0 lg:w-80">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
-            <label htmlFor="product-search" className="sr-only">
-              Search products
-            </label>
-            <input
-              id="product-search"
-              type="search"
-              value={query}
-              onChange={(e) => setParam('q', e.target.value)}
-              placeholder="Search parts, sizes, materials…"
-              className="input pl-10 pr-9"
-            />
-            {query && (
-              <button type="button" onClick={() => setParam('q', '')} className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:text-ink" aria-label="Clear search">
-                <X className="h-4 w-4" />
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
-        <p className="mt-6 text-sm text-muted" aria-live="polite">
-          Showing <span className="font-semibold text-ink">{results.length}</span> {results.length === 1 ? 'product' : 'products'} in{' '}
-          <span className="font-semibold text-ink">{activeName}</span>
-          {query && (
-            <>
-              {' '}
-              for “<span className="font-semibold text-ink">{query}</span>”
-            </>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <p className="text-sm text-muted" aria-live="polite">
+            Showing <span className="font-semibold text-ink">{results.length}</span> {results.length === 1 ? 'product' : 'products'} in{' '}
+            <span className="font-semibold text-ink">{activeName}</span>
+            {query && (
+              <>
+                {' '}
+                for “<span className="font-semibold text-ink">{query}</span>”
+              </>
+            )}
+          </p>
+          {(active !== 'all' || query) && (
+            <button type="button" onClick={() => setParams({}, { replace: true })} className="inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">
+              <X className="h-3.5 w-3.5" aria-hidden="true" /> Clear filters
+            </button>
           )}
-        </p>
+        </div>
 
         {results.length ? (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

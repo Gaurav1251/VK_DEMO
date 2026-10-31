@@ -8,6 +8,7 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Field from '../components/ui/Field';
 import EmptyState from '../components/ui/EmptyState';
 import ProductImage from '../components/ui/ProductImage';
+import Pagination, { usePagination } from '../components/ui/Pagination';
 import { useStore } from '../context/StoreContext';
 import { useToast } from '../context/ToastContext';
 
@@ -80,6 +81,7 @@ export default function AdminCategories() {
   const [deleting, setDeleting] = useState(null);
   const count = (id) => products.filter((p) => p.categoryId === id).length;
   const blocked = deleting && count(deleting.id) > 0;
+  const pager = usePagination(categories, 5);
 
   const onDelete = () => {
     if (deleteCategory(deleting.id)) toast(`Category “${deleting.name}” deleted`);
@@ -98,12 +100,12 @@ export default function AdminCategories() {
         }
       />
 
-      <div className="card overflow-hidden">
+      <div data-paginated className="card scroll-mt-20 overflow-hidden lg:scroll-mt-6">
         {categories.length ? (
           <>
           {/* Phones: one row card per category */}
           <ul className="divide-y divide-line md:hidden">
-            {categories.map((c) => {
+            {pager.items.map((c) => {
               const n = count(c.id);
               return (
                 <li key={c.id} className="flex items-center gap-3 p-4">
@@ -136,7 +138,7 @@ export default function AdminCategories() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {categories.map((c) => {
+                {pager.items.map((c) => {
                   const n = count(c.id);
                   return (
                     <tr key={c.id} className="hover:bg-soft/60">
@@ -167,6 +169,7 @@ export default function AdminCategories() {
               </tbody>
             </table>
           </div>
+          <Pagination pager={pager} label="categories" />
           </>
         ) : (
           <EmptyState

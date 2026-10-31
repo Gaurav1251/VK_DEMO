@@ -6,6 +6,9 @@ import ProductFormModal from './ProductFormModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EmptyState from '../components/ui/EmptyState';
 import ProductImage from '../components/ui/ProductImage';
+import Pagination, { usePagination } from '../components/ui/Pagination';
+import Select from '../components/ui/Select';
+import { categoryThumb } from '../components/site/CategorySelect';
 import { useStore } from '../context/StoreContext';
 import { useToast } from '../context/ToastContext';
 import { cn } from '../lib/utils';
@@ -36,6 +39,7 @@ export default function AdminProducts() {
       (p) => (category === 'all' || p.categoryId === category) && (!q || `${p.name} ${p.material} ${p.short}`.toLowerCase().includes(q)),
     );
   }, [products, query, category]);
+  const pager = usePagination(rows, 10, `${query}|${category}`);
 
   const onToggle = (p) => {
     if (toggleProductActive(p.id)) toast(p.active ? `“${p.name}” is now hidden from the website` : `“${p.name}” is now visible on the website`, 'info');
@@ -58,7 +62,7 @@ export default function AdminProducts() {
         }
       />
 
-      <div className="card overflow-hidden">
+      <div data-paginated className="card scroll-mt-20 overflow-hidden lg:scroll-mt-6">
         <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
@@ -67,24 +71,34 @@ export default function AdminProducts() {
             </label>
             <input id="admin-product-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name or material…" className="input pl-10" />
           </div>
-          <label htmlFor="admin-product-cat" className="sr-only">
-            Filter by category
-          </label>
-          <select id="admin-product-cat" value={category} onChange={(e) => setCategory(e.target.value)} className="input sm:w-60">
-            <option value="all">All categories</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="sm:w-72">
+            <Select
+              id="admin-product-cat"
+              aria-label="Filter by category"
+              listLabel="Categories"
+              searchPlaceholder="Find a category…"
+              panelMinWidth={300}
+              align="right"
+              value={category}
+              onChange={setCategory}
+              options={[
+                { value: 'all', label: 'All categories', count: products.length, thumb: categoryThumb(null, 'h-7 w-7') },
+                ...categories.map((c) => ({
+                  value: c.id,
+                  label: c.name,
+                  count: products.filter((p) => p.categoryId === c.id).length,
+                  thumb: categoryThumb(c, 'h-7 w-7'),
+                })),
+              ]}
+            />
+          </div>
         </div>
 
         {rows.length ? (
           <>
           {/* Phones: one card per product */}
           <ul className="divide-y divide-line md:hidden">
-            {rows.map((p) => (
+            {pager.items.map((p) => (
               <li key={p.id} className="p-4">
                 <div className="flex gap-3">
                   <ProductImage item={p} className="h-16 w-20 shrink-0 border border-line" rounded="rounded-lg" drawingClassName="w-[95%]" />
@@ -137,7 +151,7 @@ export default function AdminProducts() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {rows.map((p) => (
+                {pager.items.map((p) => (
                   <tr key={p.id} className="hover:bg-soft/60">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -188,6 +202,7 @@ export default function AdminProducts() {
               </tbody>
             </table>
           </div>
+          <Pagination pager={pager} label="products" />
           </>
         ) : (
           <EmptyState
