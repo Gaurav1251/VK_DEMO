@@ -24,7 +24,7 @@ export default function About() {
       />
 
       <section className="section container-x grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-16">
-        <div>
+        <div data-reveal="left">
           <p className="eyebrow">Our story</p>
           <h2 className="mt-2 text-[28px] font-extrabold leading-tight sm:text-[34px]">Built on precision, trusted for consistency</h2>
           <div className="mt-6 space-y-4 text-[15px] leading-relaxed text-muted sm:text-base">
@@ -42,12 +42,12 @@ export default function About() {
               order, so we protect their reputation as carefully as our own.
             </p>
           </div>
-          <div className="mt-8 overflow-hidden rounded-2xl">
+          <div data-reveal="zoom" className="mt-8 overflow-hidden rounded-2xl">
             <img src="/images/factory-floor.jpg" alt="Machinists inspecting brass parts beside CNC lathes on the VK India shop floor" className="aspect-[16/9] w-full object-cover" loading="lazy" />
           </div>
         </div>
 
-        <aside className="lg:pt-10">
+        <aside data-reveal="right" className="lg:pt-10">
           <div className="hero-bg relative overflow-hidden rounded-2xl p-7 text-white shadow-lift sm:p-9 lg:sticky lg:top-28">
             <div className="relative">
               <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
@@ -88,7 +88,7 @@ export default function About() {
           <SectionHeading center eyebrow="How we work" title="Business principles" text="The commitments that guide every order, every supplier and every person at VK India." />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {PRINCIPLES.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="card card-glow p-6 sm:p-7">
+              <div key={title} data-reveal className="card card-glow p-6 sm:p-7">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-tint text-brand">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>

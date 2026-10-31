@@ -113,7 +113,7 @@ export default function Quality() {
           <div className="absolute left-[12%] right-[12%] top-[52px] hidden border-t-2 border-dashed border-brand/20 lg:block" aria-hidden="true" />
           <ol className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(({ icon: Icon, title, text }, i) => (
-              <li key={title} className="card card-glow p-6">
+              <li key={title} data-reveal className="card card-glow p-6">
                 <div className="flex items-center justify-between">
                   <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-lift">
                     <Icon className="h-6 w-6" aria-hidden="true" />
@@ -136,7 +136,7 @@ export default function Quality() {
       <section className="container-x pb-16 sm:pb-20">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
           {GALLERY.map((g, i) => (
-            <figure key={g.src} className={`card-glow group relative overflow-hidden rounded-2xl ${i === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}>
+            <figure key={g.src} data-reveal="zoom" className={`card-glow group relative overflow-hidden rounded-2xl ${i === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}>
               <img src={g.src} alt={g.alt} loading="lazy" className="aspect-[4/3] h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-deeper/90 via-brand-deeper/40 to-transparent px-5 pb-4 pt-12">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent">{g.tag}</p>
@@ -149,13 +149,13 @@ export default function Quality() {
 
       <section className="section bg-soft">
         <div className="container-x grid gap-6 lg:grid-cols-2">
-          <div className="card card-glow p-6 sm:p-8">
+          <div data-reveal="left" className="card card-glow p-6 sm:p-8">
             <p className="eyebrow">Manufacturing</p>
             <h2 className="mt-2 text-2xl font-extrabold">Our machines</h2>
             <p className="mt-2 text-[15px] text-muted">Turning, milling, forging and pressing under one roof.</p>
             <BulletList items={MACHINES} />
           </div>
-          <div className="card card-glow p-6 sm:p-8">
+          <div data-reveal="right" className="card card-glow p-6 sm:p-8">
             <p className="eyebrow">Quality lab</p>
             <h2 className="mt-2 text-2xl font-extrabold">Measurement & testing</h2>
             <p className="mt-2 text-[15px] text-muted">World-class instruments for checking material, dimensions and finish.</p>
@@ -168,7 +168,7 @@ export default function Quality() {
         <SectionHeading center eyebrow="Materials" title="Metals we work with" text="We machine a wide range of non-ferrous and ferrous metals and alloys, and supply mill certificates on request." />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {METALS.map((m) => (
-            <article key={m.name} className="card-glow overflow-hidden rounded-2xl border border-line bg-white">
+            <article key={m.name} data-reveal className="card-glow overflow-hidden rounded-2xl border border-line bg-white">
               <div className="relative flex h-44 items-center justify-center overflow-hidden" style={{ background: m.gradient }}>
                 <PartDrawing style={m.drawing} stroke="rgba(255,255,255,0.95)" dim="#fff" className="relative w-[70%] [&_g]:fill-white/10" title={`${m.name} part drawing`} />
               </div>

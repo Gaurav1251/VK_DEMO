@@ -6,10 +6,12 @@ import Footer from './Footer';
 import EnquiryModal from './EnquiryModal';
 import WhatsAppFloat from './WhatsAppFloat';
 import { EnquiryModalContext } from './enquiryModalContext';
+import useScrollReveal from '../../lib/useScrollReveal';
 
 export default function SiteLayout() {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const { pathname, search } = useLocation();
+  useScrollReveal();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -28,7 +30,8 @@ export default function SiteLayout() {
       </a>
       <TopBar />
       <Header onOpenEnquiry={enquiry.open} />
-      <main id="main">
+      {/* overflow-x-clip: side-slide reveals never cause a horizontal scrollbar on phones */}
+      <main id="main" className="overflow-x-clip">
         <Outlet />
       </main>
       <Footer />

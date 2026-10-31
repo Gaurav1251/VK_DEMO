@@ -27,7 +27,7 @@ export default function ProductCard({ product, category }) {
   const url = `/products/${product.id}`;
 
   return (
-    <article className="card-glow product-card group flex flex-col overflow-hidden rounded-2xl border bg-white">
+    <article data-reveal className="card-glow product-card group flex flex-col overflow-hidden rounded-2xl border bg-white">
       <Link to={url} className="relative block border-b border-line" tabIndex={-1} aria-hidden="true">
         <ProductImage item={product} rounded="rounded-none" className="aspect-[4/3] transition duration-300 group-hover:brightness-[1.02]" />
         {product.featured && (

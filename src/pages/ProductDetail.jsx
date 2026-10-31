@@ -103,7 +103,7 @@ export default function ProductDetail() {
 
       <section className="container-x grid gap-8 py-10 sm:py-14 lg:grid-cols-2 lg:gap-14">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <div className="relative overflow-hidden rounded-2xl border border-line shadow-card">
+          <div data-reveal="zoom" className="relative overflow-hidden rounded-2xl border border-line shadow-card">
             <ProductImage item={product} rounded="rounded-none" className="aspect-[4/3] sm:aspect-square" drawingClassName="w-[84%]" />
             {product.featured && (
               <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">Popular</span>
@@ -123,7 +123,7 @@ export default function ProductDetail() {
           </ul>
         </div>
 
-        <div>
+        <div data-reveal="right">
           <Link to={`/products?category=${category.id}`} className="text-xs font-bold uppercase tracking-wider text-accent hover:underline">
             {category.name}
           </Link>
@@ -199,8 +199,10 @@ export default function ProductDetail() {
       {related.length > 0 && (
         <section className="border-t border-line bg-soft py-14 sm:py-16">
           <div className="container-x">
-            <p className="eyebrow">More in {category.name}</p>
-            <h2 className="mt-2 text-2xl font-extrabold sm:text-[28px]">Related products</h2>
+            <div data-reveal>
+              <p className="eyebrow">More in {category.name}</p>
+              <h2 className="mt-2 text-2xl font-extrabold sm:text-[28px]">Related products</h2>
+            </div>
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} category={category} />

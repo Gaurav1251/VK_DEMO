@@ -41,10 +41,12 @@ export default function PageHeader({ title, subtitle, crumbs, image, imagePositi
         <path d="M40 100h220M150 0v200" strokeDasharray="14 4 3 4" />
       </svg>
       <div className={cn('container-x relative py-12 sm:py-20', image && !HERO_TINT && '[text-shadow:0_1px_12px_rgba(0,0,0,0.55)]')}>
-        <Breadcrumb light items={crumbs} />
-        <h1 className="mt-4 text-3xl font-extrabold text-white sm:text-4xl lg:text-[44px] lg:leading-[1.1]">{title}</h1>
+        <div className="fade-up">
+          <Breadcrumb light items={crumbs} />
+        </div>
+        <h1 className="fade-up mt-4 text-3xl font-extrabold text-white [animation-delay:0.1s] sm:text-4xl lg:text-[44px] lg:leading-[1.1]">{title}</h1>
         {subtitle && (
-          <p className={cn('mt-3 max-w-2xl text-[15px] leading-relaxed sm:text-base', image && !HERO_TINT ? 'text-white/90' : 'text-white/75')}>{subtitle}</p>
+          <p className={cn('fade-up mt-3 max-w-2xl text-[15px] leading-relaxed [animation-delay:0.2s] sm:text-base', image && !HERO_TINT ? 'text-white/90' : 'text-white/75')}>{subtitle}</p>
         )}
       </div>
     </section>

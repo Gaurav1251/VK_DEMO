@@ -218,6 +218,35 @@
   animation: fade-up 0.6s ease-out forwards;
 }
 
+/* Scroll reveal (see lib/useScrollReveal.js). Hidden only once JS has switched it on.
+   `backwards` fill: after the animation the element's own styles (e.g. hover lift) apply again. */
+.reveal-on [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+}
+[data-revealed] {
+  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) backwards;
+}
+[data-reveal='left'][data-revealed] { animation-name: reveal-left; }
+[data-reveal='right'][data-revealed] { animation-name: reveal-right; }
+[data-reveal='zoom'][data-revealed] { animation-name: reveal-zoom; }
+[data-reveal='fade'][data-revealed] { animation-name: fade-in; animation-duration: 0.9s; }
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-36px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(36px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes reveal-zoom {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: none; }
+}
+
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
 }

@@ -38,7 +38,7 @@ const WHY = [
 
 export function SectionHeading({ eyebrow, title, text, action, center = false }) {
   return (
-    <div className={`flex flex-col gap-4 ${center ? 'items-center text-center' : 'sm:flex-row sm:items-end sm:justify-between'}`}>
+    <div data-reveal className={`flex flex-col gap-4 ${center ? 'items-center text-center' : 'sm:flex-row sm:items-end sm:justify-between'}`}>
       <div className="max-w-2xl">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h2 className="mt-2 text-[28px] font-extrabold leading-tight sm:text-[34px]">{title}</h2>
@@ -52,7 +52,7 @@ export function SectionHeading({ eyebrow, title, text, action, center = false })
 export function CtaBanner() {
   return (
     <section className="container-x pb-20 sm:pb-24">
-      <div className="hero-bg relative overflow-hidden rounded-2xl px-6 py-10 text-white shadow-lift sm:px-12 sm:py-14">
+      <div data-reveal="zoom" className="hero-bg relative overflow-hidden rounded-2xl px-6 py-10 text-white shadow-lift sm:px-12 sm:py-14">
         <PhotoBackdrop src="/images/cnc-milling-chips.jpg" position="center 55%" />
         <svg className="pointer-events-none absolute -bottom-10 right-6 hidden h-56 opacity-20 md:block" viewBox="0 0 200 200" fill="none" stroke="#fff" strokeWidth="1.4" aria-hidden="true">
           <rect x="30" y="30" width="140" height="140" rx="6" />
@@ -156,7 +156,7 @@ export default function Home() {
 
       {/* Stats */}
       <section className="container-x relative z-10 -mt-20 lg:-mt-24">
-        <dl className="grid grid-cols-2 overflow-hidden rounded-2xl border border-line bg-white shadow-float lg:grid-cols-4">
+        <dl data-reveal className="grid grid-cols-2 overflow-hidden rounded-2xl border border-line bg-white shadow-float lg:grid-cols-4">
           {STATS.map(({ count, text, label, icon: Icon }, i) => (
             <div
               key={label}
@@ -194,6 +194,7 @@ export default function Home() {
             <Link
               key={c.id}
               to={`/products?category=${c.id}`}
+              data-reveal
               className="card-glow group overflow-hidden rounded-2xl border border-line bg-white"
             >
               <ProductImage item={c} rounded="rounded-none" className="aspect-[4/3]" />
@@ -212,6 +213,7 @@ export default function Home() {
           ))}
           <Link
             to="/contact"
+            data-reveal
             className="card-glow drawing-bg flex flex-col justify-between rounded-2xl border border-dashed border-brand/30 p-5 sm:p-6"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-accent shadow-card">
@@ -260,7 +262,7 @@ export default function Home() {
         <SectionHeading center eyebrow="Why VK India" title="Why choose us" text="Buyers in India and abroad trust us for consistent parts, honest prices and on-time delivery." />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {WHY.map(({ icon: Icon, title, text }, i) => (
-            <div key={title} className="card card-glow overflow-hidden p-7">
+            <div key={title} data-reveal className="card card-glow overflow-hidden p-7">
               <span className="absolute right-5 top-4 text-5xl font-extrabold text-brand/[0.06]" aria-hidden="true">
                 0{i + 1}
               </span>
@@ -277,7 +279,7 @@ export default function Home() {
       {/* Industries + factory */}
       <section className="pb-20 sm:pb-24">
         <div className="container-x grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="relative">
+          <div data-reveal="left" className="relative">
             <img src="/images/factory-floor.jpg" alt="CNC turning machines on the VK India factory floor in Jamnagar" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lift" loading="lazy" />
             <div className="absolute -bottom-5 left-5 right-5 flex items-center gap-4 rounded-xl border border-line bg-white p-4 shadow-float sm:left-auto sm:right-6 sm:w-72">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
@@ -289,7 +291,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="pt-6 lg:pt-0">
+          <div data-reveal="right" className="pt-6 lg:pt-0">
             <p className="eyebrow">Industries we serve</p>
             <h2 className="mt-2 text-[28px] font-extrabold leading-tight sm:text-[34px]">Parts that power, plumb and move the world</h2>
             <p className="mt-3 text-[15px] leading-relaxed text-muted sm:text-base">

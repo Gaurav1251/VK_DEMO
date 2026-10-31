@@ -11,7 +11,7 @@ const EMPTY = { name: '', company: '', email: '', phone: '', country: 'India', r
 
 function InfoCard({ icon: Icon, title, children }) {
   return (
-    <div className="card card-glow flex gap-4 p-5">
+    <div data-reveal className="card card-glow flex gap-4 p-5">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
@@ -94,7 +94,7 @@ export default function Contact() {
             {settings.hours}
           </InfoCard>
 
-          <div className="card card-glow overflow-hidden">
+          <div data-reveal className="card card-glow overflow-hidden">
             <div className="drawing-bg relative h-56">
               <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
                 <path d="M-10 150 C 80 120, 160 170, 240 120 S 380 70, 420 90" fill="none" stroke="#fff" strokeWidth="14" />
@@ -123,7 +123,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="card p-6 sm:p-8 lg:self-start">
+        <div data-reveal="right" className="card p-6 sm:p-8 lg:self-start">
           {sent ? (
             <div className="flex flex-col items-center py-10 text-center">
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60">

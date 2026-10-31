@@ -45,7 +45,7 @@ export default function Products() {
       />
 
       <section className="container-x py-10 sm:py-14">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div data-reveal="fade" className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter by category">
             {pills.map((pill) => {
               const selected = pill.id === active;

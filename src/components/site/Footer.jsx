@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-brand-deeper text-white/70">
       <div className="footer-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
       <div className="container-x relative grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1fr_1.3fr] lg:gap-12 lg:py-16">
-        <div>
+        <div data-reveal>
           <Logo light />
           <p className="mt-5 max-w-xs text-sm leading-relaxed">
             Precision brass, copper and steel components machined in Jamnagar since 2006 — for switchgear, plumbing, automotive and
@@ -22,7 +22,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div>
+        <div data-reveal>
           <h3 className="text-sm font-bold uppercase tracking-wider text-white">Quick links</h3>
           <ul className="mt-4 space-y-2.5 text-sm">
             {NAV.map((item) => (
@@ -35,7 +35,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div data-reveal>
           <h3 className="text-sm font-bold uppercase tracking-wider text-white">Products</h3>
           <ul className="mt-4 space-y-2.5 text-sm">
             {categories.map((c) => (
@@ -48,7 +48,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div data-reveal>
           <h3 className="text-sm font-bold uppercase tracking-wider text-white">Contact</h3>
           <ul className="mt-4 space-y-3.5 text-sm">
             <li className="flex gap-3">
