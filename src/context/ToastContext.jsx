@@ -32,7 +32,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={value}>
       {children}
       <div
-        className="pointer-events-none fixed inset-x-3 bottom-24 z-[100] flex flex-col items-center gap-2 sm:inset-x-auto sm:bottom-6 sm:left-6 sm:items-start"
+        className="pointer-events-none fixed inset-x-3 bottom-24 z-[100] flex flex-col print:hidden items-center gap-2 sm:inset-x-auto sm:bottom-6 sm:left-6 sm:items-start"
         role="status"
         aria-live="polite"
       >

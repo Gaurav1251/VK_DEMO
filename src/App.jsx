@@ -13,6 +13,9 @@ import Dashboard from './admin/Dashboard';
 import AdminProducts from './admin/AdminProducts';
 import AdminCategories from './admin/AdminCategories';
 import AdminEnquiries from './admin/AdminEnquiries';
+import AdminOrders from './admin/AdminOrders';
+import OrderDetail from './admin/OrderDetail';
+import OrderDocument from './admin/OrderDocument';
 import AdminSettings from './admin/AdminSettings';
 
 export default function App() {
@@ -30,8 +33,13 @@ export default function App() {
 
       {/* Admin is intentionally not linked from the public site. */}
       <Route path="admin" element={<AdminLogin />} />
+      {/* Bills and receipts: full page, no admin menu, ready to print */}
+      <Route path="admin/orders/:id/bill" element={<OrderDocument type="bill" />} />
+      <Route path="admin/orders/:id/receipt/:paymentId" element={<OrderDocument type="receipt" />} />
       <Route path="admin" element={<AdminLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="orders/:id" element={<OrderDetail />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="categories" element={<AdminCategories />} />
         <Route path="enquiries" element={<AdminEnquiries />} />

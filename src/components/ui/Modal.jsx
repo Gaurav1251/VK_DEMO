@@ -60,9 +60,10 @@ export function useOverlay(open, onClose, panelRef) {
   }, [open, panelRef]);
 }
 
-const SIZES = { sm: 'max-w-md', md: 'max-w-xl', lg: 'max-w-3xl' };
+const SIZES = { sm: 'max-w-md', md: 'max-w-xl', lg: 'max-w-3xl', xl: 'max-w-5xl' };
 
-export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md', icon }) {
+/** `fullScreenMobile`: on phones the modal fills the whole screen like a page (for long forms). */
+export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md', icon, fullScreenMobile = false }) {
   const panelRef = useRef(null);
   const titleId = `modal-${useId().replace(/:/g, '')}`;
   useOverlay(open, onClose, panelRef);
@@ -78,24 +79,27 @@ export default function Modal({ open, onClose, title, subtitle, children, footer
         aria-labelledby={titleId}
         tabIndex={-1}
         className={cn(
-          'pop-in relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl bg-white shadow-float outline-none sm:rounded-2xl',
+          'pop-in relative flex w-full flex-col overflow-hidden bg-white shadow-float outline-none sm:max-h-[92vh] sm:rounded-2xl',
+          fullScreenMobile ? 'h-[100dvh] max-h-[100dvh] sm:h-auto' : 'max-h-[92vh] rounded-t-2xl',
           SIZES[size],
         )}
       >
-        <div className="flex items-start gap-3 border-b border-line px-5 py-4 sm:px-6">
+        <div className={cn('flex items-start gap-3 border-b border-line px-5 sm:px-6 sm:py-4', fullScreenMobile ? 'py-3' : 'py-4')}>
           {icon}
           <div className="min-w-0 flex-1">
             <h2 id={titleId} className="text-lg font-bold">
               {title}
             </h2>
-            {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
+            {subtitle && <p className={cn('mt-0.5 text-sm text-muted', fullScreenMobile && 'hidden sm:block')}>{subtitle}</p>}
           </div>
           <button type="button" onClick={onClose} className="-mr-1.5 rounded-lg p-1.5 text-muted hover:bg-soft hover:text-ink" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
-        {footer && <div className="flex flex-wrap justify-end gap-2.5 border-t border-line bg-soft/60 px-5 py-3.5 sm:px-6">{footer}</div>}
+        {footer && (
+          <div className="flex flex-wrap justify-end gap-2.5 border-t border-line bg-soft/60 px-5 py-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))] sm:px-6">{footer}</div>
+        )}
       </div>
     </div>,
     document.body,

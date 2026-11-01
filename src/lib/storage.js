@@ -9,6 +9,7 @@ export const KEYS = {
   categories: 'categories',
   products: 'products',
   enquiries: 'enquiries',
+  orders: 'orders',
   cart: 'enquiry_list',
   session: 'admin_session',
   seeded: 'seed_version',
@@ -70,6 +71,7 @@ export function writeSeed(seed) {
   write(KEYS.categories, seed.categories);
   write(KEYS.products, seed.products);
   write(KEYS.enquiries, seed.enquiries);
+  write(KEYS.orders, seed.orders);
   write(KEYS.cart, []);
   write(KEYS.seeded, SEED_VERSION);
 }

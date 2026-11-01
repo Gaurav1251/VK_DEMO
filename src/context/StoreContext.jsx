@@ -1,18 +1,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { buildSeed, DEFAULT_SETTINGS } from '../lib/seed';
+import { buildSeed, DEFAULT_PRICES, DEFAULT_SETTINGS } from '../lib/seed';
 import { KEYS, ensureSeeded, read, storageAvailable, subscribe, write, writeSeed, remove } from '../lib/storage';
+import { nextOrderSeq } from '../lib/orders';
 import { enquiryId, uniqueId } from '../lib/utils';
 
 const StoreContext = createContext(null);
 
+const newId = (prefix) => `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
 function load() {
   const seed = buildSeed();
   ensureSeeded(seed);
+  // Saved before the order book existed: start it with the sample orders
+  let orders = read(KEYS.orders, null);
+  if (!Array.isArray(orders)) {
+    orders = seed.orders;
+    write(KEYS.orders, orders);
+  }
   return {
     settings: { ...DEFAULT_SETTINGS, ...read(KEYS.settings, {}) },
     categories: read(KEYS.categories, seed.categories),
-    products: read(KEYS.products, seed.products),
+    // Products saved before rates existed get the sample rate
+    products: read(KEYS.products, seed.products).map((p) => (p.price === undefined ? { ...p, price: DEFAULT_PRICES[p.id] ?? '' } : p)),
     enquiries: read(KEYS.enquiries, seed.enquiries),
+    orders,
     cart: read(KEYS.cart, []),
     session: read(KEYS.session, null),
   };
@@ -100,6 +111,35 @@ export function StoreProvider({ children }) {
       deleteEnquiry: (id) => {
         const { enquiries } = get();
         return persist('enquiries', enquiries.filter((e) => e.id !== id));
+      },
+
+      // Order book. saveOrder returns the order's id, or false if it could not be saved.
+      saveOrder: (order) => {
+        const { orders } = get();
+        if (order.id && orders.some((o) => o.id === order.id)) {
+          return persist('orders', orders.map((o) => (o.id === order.id ? { ...o, ...order } : o))) && order.id;
+        }
+        const id = newId('ord');
+        const record = { ...order, id, seq: nextOrderSeq(orders), createdAt: new Date().toISOString() };
+        record.payments = (order.payments || []).map((p) => ({ ...p, id: newId('pay') }));
+        return persist('orders', [record, ...orders]) && id;
+      },
+      deleteOrder: (id) => {
+        const { orders } = get();
+        return persist('orders', orders.filter((o) => o.id !== id));
+      },
+      setOrderStatus: (id, status) => {
+        const { orders } = get();
+        return persist('orders', orders.map((o) => (o.id === id ? { ...o, status } : o)));
+      },
+      addPayment: (orderId, payment) => {
+        const { orders } = get();
+        const record = { ...payment, id: newId('pay') };
+        return persist('orders', orders.map((o) => (o.id === orderId ? { ...o, payments: [...(o.payments || []), record] } : o)));
+      },
+      deletePayment: (orderId, paymentId) => {
+        const { orders } = get();
+        return persist('orders', orders.map((o) => (o.id === orderId ? { ...o, payments: (o.payments || []).filter((p) => p.id !== paymentId) } : o)));
       },
 
       // My Enquiry (the B2B "cart")

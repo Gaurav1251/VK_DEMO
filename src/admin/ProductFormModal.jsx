@@ -16,6 +16,7 @@ const BLANK = {
   finish: 'Natural, nickel or tin plated',
   sizes: '',
   moq: '1,000 pcs',
+  price: '',
   image: '',
   drawing: 'turned',
   featured: false,
@@ -53,12 +54,15 @@ export default function ProductFormModal({ open, product, onClose }) {
     if (!form.categoryId) next.categoryId = 'Choose a category';
     if (!form.short.trim()) next.short = 'Short description is required';
     else if (form.short.trim().length > 160) next.short = `Keep it under 160 characters (now ${form.short.trim().length})`;
+    const price = String(form.price ?? '').replace(/,/g, '').trim();
+    if (price && !(Number(price) >= 0)) next.price = 'Enter a number, e.g. 38.50';
     setErrors(next);
     if (Object.keys(next).length) {
       document.getElementById(`f-p-${Object.keys(next)[0]}`)?.focus();
       return;
     }
     const clean = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, typeof v === 'string' && k !== 'image' ? v.trim() : v]));
+    clean.price = price === '' ? '' : Number(price);
     const ok = saveProduct(clean);
     if (!ok) {
       toast('Could not save — browser storage is full. Try a smaller photo or remove unused photos.', 'error');
@@ -116,6 +120,16 @@ export default function ProductFormModal({ open, product, onClose }) {
         <Field label="Finish" name="p-finish" {...bind('finish')} placeholder="Natural, nickel or tin plated" />
         <Field label="Sizes" name="p-sizes" {...bind('sizes')} placeholder="4 to 26 way" />
         <Field label="Minimum order" name="p-moq" {...bind('moq')} placeholder="1,000 pcs" />
+        <Field
+          label="Rate per piece (₹)"
+          name="p-price"
+          inputMode="decimal"
+          {...bind('price')}
+          error={errors.price}
+          placeholder="e.g. 38.50"
+          hint="Fills in automatically on new orders and bills. Only visible in admin."
+          className="sm:col-span-2"
+        />
         <div className="sm:col-span-2">
           <ImagePicker image={form.image} drawing={form.drawing} name={form.name} onChange={set} />
         </div>

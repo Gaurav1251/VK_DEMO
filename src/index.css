@@ -77,8 +77,13 @@
   .label {
     @apply mb-1.5 block text-[13px] font-semibold text-ink;
   }
+  /* 16px on phones: iPhones zoom the whole page into any smaller input when it's tapped */
   .input {
-    @apply block w-full rounded-[10px] border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-[#98A2B3] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10;
+    @apply block w-full rounded-[10px] border border-line bg-white px-3.5 py-2.5 text-base text-ink sm:text-sm placeholder:text-[#98A2B3] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10;
+  }
+  /* Phones give date inputs a fixed minimum width; let them fit half-width columns */
+  .input[type='date'] {
+    min-width: 0;
   }
   .input-error {
     @apply border-red-400 focus:border-red-500 focus:ring-red-500/10;
@@ -316,6 +321,18 @@
 }
 .pop-in {
   animation: pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Bills and receipts (admin/OrderDocument.jsx): A4, keep the brand colours when printing */
+.print-exact {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

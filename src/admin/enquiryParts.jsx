@@ -1,4 +1,5 @@
-import { Mail, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ClipboardPlus, Mail, Trash2 } from 'lucide-react';
 import Modal from '../components/ui/Modal';
 import Select from '../components/ui/Select';
 import WhatsAppIcon from '../components/ui/WhatsAppIcon';
@@ -83,6 +84,9 @@ export function EnquiryDetailModal({ enquiry, onClose, onStatus, onDelete, sales
               <WhatsAppIcon className="h-4 w-4" /> WhatsApp
             </a>
           )}
+          <Link to={`/admin/orders?new=1&from=${enquiry.id}`} className="btn btn-outline-blue">
+            <ClipboardPlus className="h-4 w-4" aria-hidden="true" /> Create order
+          </Link>
           <a href={replyMailto(enquiry, salesEmail)} className="btn btn-blue">
             <Mail className="h-4 w-4" aria-hidden="true" /> Reply by email
           </a>

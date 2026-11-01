@@ -1,12 +1,77 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BellDot, FolderTree, Inbox, Package, Plus } from 'lucide-react';
+import { ArrowRight, BellDot, ClipboardPlus, FolderTree, Inbox, Package, Plus, Wallet } from 'lucide-react';
 import { AdminPageHeader } from './AdminLayout';
 import { EnquiryDetailModal, StatusPill } from './enquiryParts';
+import { PaidBar, PaymentPill } from './orderParts';
 import EmptyState from '../components/ui/EmptyState';
 import { useStore } from '../context/StoreContext';
 import { useToast } from '../context/ToastContext';
-import { formatDate, itemsSummary } from '../lib/utils';
+import { customerLabel, formatDay, formatINR, orderNo, orderTotals, paymentState } from '../lib/orders';
+import { cn, formatDate, itemsSummary } from '../lib/utils';
+
+function PaymentsToCollect({ orders }) {
+  const live = orders
+    .filter((o) => o.status !== 'Cancelled')
+    .map((o) => {
+      const totals = orderTotals(o);
+      return { ...o, totals, payState: paymentState(o, totals) };
+    });
+  const due = live.filter((o) => o.totals.balance > 0).sort((a, b) => b.totals.balance - a.totals.balance);
+  const sum = (key) => live.reduce((s, o) => s + o.totals[key], 0);
+
+  return (
+    <section className="card mt-6 overflow-hidden">
+      <div className="flex items-center justify-between border-b border-line px-5 py-4">
+        <div>
+          <h2 className="text-base font-bold">Payments to collect</h2>
+          <p className="text-xs text-muted">Orders with a balance still due</p>
+        </div>
+        <Link to="/admin/orders" className="text-sm font-semibold text-brand hover:underline">
+          View orders
+        </Link>
+      </div>
+      <dl className="grid grid-cols-3 divide-x divide-line border-b border-line bg-soft/50">
+        {[
+          ['Total billed', sum('total'), 'text-ink'],
+          ['Received', sum('paid'), 'text-emerald-700'],
+          ['Balance due', sum('balance'), 'text-red-600'],
+        ].map(([label, value, tone]) => (
+          <div key={label} className="px-3 py-3 text-center sm:px-5 sm:text-left">
+            <dt className="text-[11px] font-bold uppercase tracking-wider text-muted">{label}</dt>
+            <dd className={cn('mt-0.5 truncate text-base font-extrabold tabular-nums sm:text-xl', tone)}>{formatINR(value, { decimals: false })}</dd>
+          </div>
+        ))}
+      </dl>
+      {due.length ? (
+        <ul className="divide-y divide-line">
+          {due.slice(0, 5).map((o) => (
+            <li key={o.id}>
+              <Link to={`/admin/orders/${o.id}`} className="grid gap-2 px-5 py-3.5 transition hover:bg-brand-tint/40 sm:grid-cols-[minmax(0,1fr)_200px_auto] sm:items-center sm:gap-5">
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold text-ink">{customerLabel(o.customer)}</span>
+                  <span className="block text-xs text-muted">
+                    {orderNo(o)} · {formatDay(o.date)}
+                  </span>
+                </span>
+                <span>
+                  <span className="flex items-center justify-between text-xs text-muted">
+                    <PaymentPill state={o.payState} />
+                    <span className="tabular-nums">of {formatINR(o.totals.total, { decimals: false })}</span>
+                  </span>
+                  <PaidBar paid={o.totals.paid} total={o.totals.total} state={o.payState} className="mt-1.5" />
+                </span>
+                <span className="text-sm font-extrabold tabular-nums text-red-600 sm:text-right">{formatINR(o.totals.balance, { decimals: false })} due</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <EmptyState compact icon={Wallet} title="Nothing to collect" text="Every order is fully paid." />
+      )}
+    </section>
+  );
+}
 
 function StatCard({ icon: Icon, label, value, tone, to }) {
   return (
@@ -24,7 +89,7 @@ function StatCard({ icon: Icon, label, value, tone, to }) {
 }
 
 export default function Dashboard() {
-  const { products, categories, enquiries, settings, setEnquiryStatus } = useStore();
+  const { products, categories, enquiries, orders, settings, setEnquiryStatus } = useStore();
   const toast = useToast();
   const [viewing, setViewing] = useState(null);
   const newCount = enquiries.filter((e) => e.status === 'New').length;
@@ -40,11 +105,16 @@ export default function Dashboard() {
     <>
       <AdminPageHeader
         title="Dashboard"
-        subtitle={`Overview of your catalogue and enquiries · ${formatDate(new Date().toISOString())}`}
+        subtitle={`Overview of your orders, catalogue and enquiries · ${formatDate(new Date().toISOString())}`}
         actions={
-          <Link to="/admin/products?new=1" className="btn btn-primary">
-            <Plus className="h-4 w-4" aria-hidden="true" /> Add product
-          </Link>
+          <>
+            <Link to="/admin/products?new=1" className="btn btn-outline">
+              <Plus className="h-4 w-4" aria-hidden="true" /> Add product
+            </Link>
+            <Link to="/admin/orders?new=1" className="btn btn-primary">
+              <ClipboardPlus className="h-4 w-4" aria-hidden="true" /> New order
+            </Link>
+          </>
         }
       />
 
@@ -54,6 +124,8 @@ export default function Dashboard() {
         <StatCard icon={Inbox} label="Total enquiries" value={enquiries.length} tone="bg-emerald-50 text-emerald-600" to="/admin/enquiries" />
         <StatCard icon={BellDot} label="New enquiries" value={newCount} tone="bg-accent-tint text-accent" to="/admin/enquiries?status=New" />
       </div>
+
+      <PaymentsToCollect orders={orders} />
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.6fr_1fr]">
         <section className="card overflow-hidden">

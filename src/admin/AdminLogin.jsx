@@ -46,7 +46,7 @@ export default function AdminLogin() {
         <div className="pop-in rounded-2xl bg-white p-7 shadow-float sm:p-9">
           <Logo />
           <h1 className="mt-8 text-2xl font-extrabold">Sign in</h1>
-          <p className="mt-1 text-sm text-muted">Manage products, categories and enquiries.</p>
+          <p className="mt-1 text-sm text-muted">Manage orders, products, categories and enquiries.</p>
 
           <form onSubmit={submit} noValidate className="mt-7 space-y-4">
             <Field label="Username" name="username" value={form.username} onChange={update('username')} error={errors.username} autoComplete="username" autoFocus />

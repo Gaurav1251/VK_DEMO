@@ -11,6 +11,39 @@ export const DEFAULT_SETTINGS = {
   address: '#28, GIDC II, Dared, Jamnagar 361004, Gujarat, India',
   whatsapp: '917573001105',
   hours: '8:30 AM – 6:00 PM (Friday holiday)',
+  // Printed on bills and receipts
+  companyName: 'VK India Incorporation',
+  gstin: '',
+  bankName: '',
+  bankAccount: '',
+  bankIfsc: '',
+  upiId: '',
+  billTerms: 'Goods once sold will not be taken back.\nInterest @ 18% p.a. will be charged on payments delayed beyond 30 days.\nSubject to Jamnagar jurisdiction.',
+};
+
+// Rate per piece (₹), used to fill in new orders. Admin only.
+export const DEFAULT_PRICES = {
+  'neutral-links-earth-bars': 38,
+  'electrical-socket-pins': 2.4,
+  'special-cable-glands': 46,
+  'terminal-blocks': 14,
+  'clamps-wiring-accessories': 1.8,
+  'sheet-metal-pressed-parts': 3.2,
+  'tees-elbows': 62,
+  'brass-nozzles': 18,
+  'water-connector-flange': 85,
+  'brass-union': 74,
+  'brass-ppr-inserts': 9.5,
+  'high-precision-steel-parts': 12,
+  'brass-spool-shaft': 28,
+  'gas-valve-bodies': 145,
+  'gas-nozzle-fittings': 4.5,
+  'brass-threaded-inserts': 1.6,
+  'high-precision-machined-parts': 35,
+  'copper-parts': 22,
+  'cnc-turned-parts': 8.5,
+  'brass-hex-nuts': 0.9,
+  'brass-screws-bolts': 1.2,
 };
 
 export const DEFAULT_CATEGORIES = [
@@ -32,6 +65,7 @@ const p = (data) => ({
   finish: 'Natural, nickel or tin plated',
   material: BRASS,
   createdAt: '2026-01-01T00:00:00.000Z',
+  price: DEFAULT_PRICES[data.id] ?? '',
   ...data,
 });
 
@@ -378,12 +412,89 @@ export function buildSeedEnquiries() {
   ];
 }
 
+const dayAgo = (days) => daysAgo(days).slice(0, 10);
+
+const line = (productId, qty, unit = 'pcs') => {
+  const product = DEFAULT_PRODUCTS.find((pr) => pr.id === productId);
+  return { id: `ln-${productId}`, productId, name: product.name, qty, unit, rate: DEFAULT_PRICES[productId] };
+};
+
+export function buildSeedOrders() {
+  return [
+    {
+      id: 'ord-0004',
+      seq: 4,
+      date: dayAgo(1),
+      deliveryDate: dayAgo(1),
+      createdAt: daysAgo(1, 12),
+      status: 'Delivered',
+      customer: { name: 'Kiran Patel', company: 'Patel Hardware Stores', phone: '+91 98242 55018', email: '', gstin: '', address: 'Grain Market Road, Jamnagar 361001, Gujarat' },
+      items: [line('brass-hex-nuts', 20000), line('brass-screws-bolts', 10000)],
+      discount: { type: 'percent', value: 0 },
+      tax: { rate: 18, interState: false },
+      freight: 0,
+      notes: 'Counter sale, collected by customer.',
+      payments: [{ id: 'pay-0004-1', date: dayAgo(1), amount: 35400, mode: 'Cash', note: '' }],
+    },
+    {
+      id: 'ord-0003',
+      seq: 3,
+      date: dayAgo(3),
+      deliveryDate: dayAgo(-25),
+      createdAt: daysAgo(3, 15),
+      status: 'Confirmed',
+      enquiryId: 'enq-1002',
+      customer: { name: 'Ahmed Al Mansoori', company: 'Gulf Gas Equipment LLC', phone: '+971 50 123 4567', email: 'ahmed@gulfgas.ae', gstin: '', address: 'Industrial Area 12, Sharjah, United Arab Emirates' },
+      items: [line('gas-valve-bodies', 3000)],
+      discount: { type: 'amount', value: 10000 },
+      tax: { rate: 0, interState: true },
+      freight: 0,
+      notes: 'Export order — FOB Mundra. 30% advance before dispatch.',
+      payments: [],
+    },
+    {
+      id: 'ord-0002',
+      seq: 2,
+      date: dayAgo(12),
+      deliveryDate: dayAgo(-6),
+      createdAt: daysAgo(12, 11),
+      status: 'In production',
+      customer: { name: 'Rahul Mehta', company: 'Mehta Switchgear Pvt Ltd', phone: '+91 98250 41122', email: 'rahul@mehtaswitchgear.in', gstin: '24AAKCM4521F1Z8', address: 'Plot 214, GIDC Vatva, Ahmedabad 382445, Gujarat' },
+      items: [line('neutral-links-earth-bars', 5000), line('terminal-blocks', 2000)],
+      discount: { type: 'percent', value: 5 },
+      tax: { rate: 18, interState: false },
+      freight: 1500,
+      notes: 'Nickel plated. Pack 100 pcs per box.',
+      payments: [{ id: 'pay-0002-1', date: dayAgo(12), amount: 100000, mode: 'Cheque', note: 'Cheque no. 004512, HDFC Bank' }],
+    },
+    {
+      id: 'ord-0001',
+      seq: 1,
+      date: dayAgo(24),
+      deliveryDate: dayAgo(8),
+      createdAt: daysAgo(24, 10),
+      status: 'Delivered',
+      customer: { name: 'Priya Shah', company: 'Shah Auto Components', phone: '+91 99099 77311', email: 'priya@shahauto.in', gstin: '27AAHFS7731K1ZQ', address: 'MIDC Bhosari, Pune 411026, Maharashtra' },
+      items: [line('brass-spool-shaft', 1500)],
+      discount: { type: 'percent', value: 0 },
+      tax: { rate: 18, interState: true },
+      freight: 0,
+      notes: 'Drawing rev C.',
+      payments: [
+        { id: 'pay-0001-1', date: dayAgo(24), amount: 20000, mode: 'Bank transfer', note: 'Advance' },
+        { id: 'pay-0001-2', date: dayAgo(6), amount: 29560, mode: 'UPI', note: 'Final payment' },
+      ],
+    },
+  ];
+}
+
 export function buildSeed() {
   return {
     settings: { ...DEFAULT_SETTINGS },
     categories: DEFAULT_CATEGORIES.map((c) => ({ ...c })),
     products: DEFAULT_PRODUCTS.map((pr) => ({ ...pr })),
     enquiries: buildSeedEnquiries(),
+    orders: buildSeedOrders(),
   };
 }
 

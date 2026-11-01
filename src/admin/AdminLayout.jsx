@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ExternalLink, FolderTree, Inbox, LayoutDashboard, LogOut, Menu, Package, RotateCcw, Settings, X } from 'lucide-react';
+import { ClipboardList, ExternalLink, FolderTree, Inbox, LayoutDashboard, LogOut, Menu, Package, RotateCcw, Settings, X } from 'lucide-react';
 import Logo from '../components/ui/Logo';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { useStore } from '../context/StoreContext';
@@ -24,6 +24,7 @@ function Sidebar({ onNavigate, onReset, onLogout }) {
   const newCount = enquiries.filter((e) => e.status === 'New').length;
   const items = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/admin/orders', label: 'Orders & bills', icon: ClipboardList },
     { to: '/admin/products', label: 'Products', icon: Package },
     { to: '/admin/categories', label: 'Categories', icon: FolderTree },
     { to: '/admin/enquiries', label: 'Enquiries', icon: Inbox, badge: newCount },
@@ -108,7 +109,7 @@ export default function AdminLayout() {
     resetDemo();
     setConfirmReset(false);
     setMobileOpen(false);
-    toast('Demo data restored to the original products, categories and enquiries');
+    toast('Demo data restored to the original products, categories, enquiries and orders');
   };
 
   const sidebarProps = { onNavigate: () => setMobileOpen(false), onReset: () => setConfirmReset(true), onLogout: handleLogout };
@@ -158,8 +159,8 @@ export default function AdminLayout() {
         confirmLabel="Reset data"
         message={
           <>
-            All products, categories, enquiries and site settings will be restored to the original demo data. Any changes you made — including
-            uploaded photos and new enquiries — will be lost. <strong className="text-ink">This cannot be undone.</strong>
+            All products, categories, enquiries, orders and site settings will be restored to the original demo data. Any changes you made — including
+            uploaded photos, new enquiries, orders and payments — will be lost. <strong className="text-ink">This cannot be undone.</strong>
           </>
         }
       />

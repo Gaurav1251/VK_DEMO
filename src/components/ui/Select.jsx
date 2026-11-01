@@ -251,7 +251,7 @@ export default function Select({
                   aria-controls={`${uid}-list`}
                   aria-activedescendant={active ? optId(active) : undefined}
                   aria-autocomplete="list"
-                  className="input h-10 rounded-xl border-transparent bg-soft pl-9 text-[13px] focus:bg-white"
+                  className="input h-10 rounded-xl border-transparent bg-soft pl-9 sm:text-[13px] focus:bg-white"
                 />
               </div>
             )}

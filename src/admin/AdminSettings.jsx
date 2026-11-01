@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Home, Phone, Save } from 'lucide-react';
+import { Home, Phone, ReceiptText, Save } from 'lucide-react';
 import { AdminPageHeader } from './AdminLayout';
 import Field from '../components/ui/Field';
 import { useStore } from '../context/StoreContext';
@@ -28,8 +28,19 @@ function validate(form) {
   if (!form.address.trim()) e.address = 'Address is required';
   if (!/^\d{10,15}$/.test(form.whatsapp.trim())) e.whatsapp = 'Use 10–15 digits with country code, no spaces or +';
   if (!form.hours.trim()) e.hours = 'Working hours are required';
+  if (!form.companyName.trim()) e.companyName = 'Company name is required';
+  if (form.gstin.trim() && !/^[0-9A-Z]{15}$/.test(form.gstin.trim().toUpperCase())) e.gstin = 'GSTIN has 15 letters and digits, e.g. 24ABCDE1234F1Z5';
   return e;
 }
+
+const BILL_FIELDS = [
+  { key: 'companyName', label: 'Company name on bills', required: true },
+  { key: 'gstin', label: 'Your GSTIN', hint: 'Shown on every bill. Bills with GST print as “Tax invoice”.' },
+  { key: 'bankName', label: 'Bank name', placeholder: 'e.g. State Bank of India, GIDC Branch' },
+  { key: 'bankAccount', label: 'Account number' },
+  { key: 'bankIfsc', label: 'IFSC code' },
+  { key: 'upiId', label: 'UPI ID', placeholder: 'e.g. vkindia@sbi' },
+];
 
 export default function AdminSettings() {
   const { settings, saveSettings } = useStore();
@@ -59,6 +70,7 @@ export default function AdminSettings() {
       return;
     }
     const clean = Object.fromEntries(Object.entries(form).map(([k, v]) => [k, String(v).trim()]));
+    clean.gstin = clean.gstin.toUpperCase();
     if (saveSettings(clean)) toast('Settings saved — the website is updated');
     else toast('Could not save settings — browser storage is full', 'error');
   };
@@ -83,7 +95,7 @@ export default function AdminSettings() {
           </div>
         </section>
 
-        <section className="p-5 sm:p-7">
+        <section className="border-b border-line p-5 sm:p-7">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-tint text-brand">
               <Phone className="h-5 w-5" aria-hidden="true" />
@@ -98,6 +110,41 @@ export default function AdminSettings() {
               <Field key={f.key} label={f.label} name={`s-${f.key}`} type={f.type} required={f.required} hint={f.hint} {...bind(f.key)} error={errors[f.key]} />
             ))}
             <Field label="Address" name="s-address" as="textarea" rows={2} required {...bind('address')} error={errors.address} className="md:col-span-2" />
+          </div>
+        </section>
+
+        <section className="p-5 sm:p-7">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-tint text-brand">
+              <ReceiptText className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold">Bills & receipts</h2>
+              <p className="text-xs text-muted">Printed on every bill and payment receipt, with the address, phones and sales email above</p>
+            </div>
+          </div>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {BILL_FIELDS.map((f) => (
+              <Field
+                key={f.key}
+                label={f.label}
+                name={`s-${f.key}`}
+                required={f.required}
+                hint={f.hint}
+                placeholder={f.placeholder}
+                {...bind(f.key)}
+                error={errors[f.key]}
+              />
+            ))}
+            <Field
+              label="Terms & conditions"
+              name="s-billTerms"
+              as="textarea"
+              rows={3}
+              {...bind('billTerms')}
+              hint="One point per line"
+              className="md:col-span-2"
+            />
           </div>
         </section>
 
